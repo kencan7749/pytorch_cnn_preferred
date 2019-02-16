@@ -18,7 +18,8 @@ import torch
 from datetime import datetime
 
 from utils import img_preprocess, img_deprocess, normalise_img, p_norm, TV_norm,TV_norm_vid, image_norm, gaussian_blur, \
-    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, normalise_vid, vid_preprocess, vid_deprocess
+    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, normalise_vid, vid_preprocess, vid_deprocess,get_cnn_features
+
 
 
 
@@ -32,7 +33,7 @@ class minusLoss(torch.nn.Module):
         super(minusLoss, self).__init__()
 
     def forward(self, act):
-        return -act
+        return -torch.sum(act)
 
 
 # main function
@@ -57,7 +58,7 @@ def generate_preferred(net, feature_mask,
                    clip_small_contribution=False, clip_small_contribution_every=4, c_pct_start=5., c_pct_end=5.,
                    disp_every=1,
                    save_intermediate=False, save_intermediate_every=1, save_intermediate_path=None,
-
+                   norm = 255
                    ):
     '''Generate preferred image/video for the target uints using gradient descent with momentum.
 
@@ -193,12 +194,6 @@ def generate_preferred(net, feature_mask,
 
      '''
 
-    def hook(module, input, output):
-        outputs.append(output.clone())
-    # run the code in exec_code
-    for exec_str in exec_code:
-        exec(exec_str)
-
     # make save dir
     if save_intermediate:
         if save_intermediate_path is None:
@@ -266,10 +261,8 @@ def generate_preferred(net, feature_mask,
         input = torch.Tensor(input[np.newaxis])
         input.requires_grad_()
         # forward
-        outputs = []
-        fw = net(input)
-        # extract first layer
-        fw = outputs[0]
+        fw = get_cnn_features(net, input, exec_code)[0]
+
 
         feat = torch.masked_select(fw, torch.ByteTensor(feature_mask))
         feat_abs_mean = np.mean(np.abs(feat[0].detach().numpy()))
@@ -283,6 +276,8 @@ def generate_preferred(net, feature_mask,
         # backward for net
         loss = loss_fun(feat)
         loss.backward()
+
+
         grad = input.grad.numpy()
         input = input.detach().numpy()
         # normalize gradient
@@ -365,18 +360,18 @@ def generate_preferred(net, feature_mask,
         if save_intermediate and ((t + 1) % save_intermediate_every == 0):
             if len(input_size) == 3:
                 save_name = '%05d.jpg' % (t + 1)
-                PIL.Image.fromarray(normalise_img(img_deprocess(input, img_mean, img_std))).save(
+                PIL.Image.fromarray(normalise_img(img_deprocess(input, img_mean, img_std,norm))).save(
                     os.path.join(save_intermediate_path, save_name))
             else:
                 save_name = '%05d.avi' % (t + 1)
-                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std)), save_name, save_intermediate_path)
+                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path)
             # print(img.dtype)
 
     # return input
     if len(input_size) == 3:
-        return img_deprocess(input, img_mean, img_std)
+        return img_deprocess(input, img_mean, img_std, norm)
     else:
-        return vid_deprocess(input, img_mean, img_std)
+        return vid_deprocess(input, img_mean, img_std, norm)
 
 
 
