@@ -5,13 +5,10 @@ Author: Ken SHIRAKAWA <shirakawa.ken.38w@st.kyoto-u.ac.jp.jp>
 
 import os
 import numpy as np
-import PIL.Image
-import scipy.io as sio
 import scipy.ndimage as nd
-from scipy.misc import imresize
 import cv2
-import torch
 import copy
+import torch
 
 
 def img_preprocess(img, img_mean=np.array([0.485, 0.456, 0.406], dtype=np.float),
@@ -97,6 +94,12 @@ def get_cnn_features(model, input, exec_code_list):
     _ = net(input)
 
     return outputs
+
+def get_target_feature_shape(model, input, exec_code_list):
+    '''exec_code_list is only allowed one element list'''
+    output = get_cnn_features(model, input, exec_code_list)
+
+    return output[0].detach().numpy().shape
 
 
 def p_norm(x, p=2):
@@ -238,67 +241,29 @@ def sort_layer_list(net, layer_list):
     return layer_list_sorted
 
 
-def create_feature_masks(features, masks=None, channels=None):
+def create_feature_mask(net, exec_code, input_shape = (224,224,3), channel=0, x_index = None, y_index =None, t_index=None):
     '''
     create feature mask for all layers;
     select CNN units using masks or channels
     input:
-        features: a python dictionary consists of CNN features of target layers, arranged in pairs of layer name (key) and CNN features (value)
-        masks: a python dictionary consists of masks for CNN features, arranged in pairs of layer name (key) and mask (value); the mask selects units for each layer to be used in the loss function (1: using the uint; 0: excluding the unit); mask can be 3D or 2D numpy array; use all the units if some layer not in the dictionary; setting to None for using all units for all layers
-        channels: a python dictionary consists of channels to be selected, arranged in pairs of layer name (key) and channel numbers (value); the channel numbers of each layer are the channels to be used in the loss function; use all the channels if the some layer not in the dictionary; setting to None for using all channels for all layers
+        net: pytorch model to visualize intermediate layer
+        input_shape: tuple that assigns input image to net
+        channel:     int number to set the channel to visalize
+        x_index, y_index, t_index: [optional] int number to set the position of chanel to maximize
     output:
-        feature_masks: a python dictionary consists of masks for CNN features, arranged in pairs of layer name (key) and mask (value); mask has the same shape as the CNN features of the corresponding layer;
+        feature_masks: a numpy ndarray consists of masks for CNN features, mask has the same shape as the CNN features of the corresponding layer;
     '''
 
-    # slight change for pytorch (add .detach().numpy())
-    feature_masks = {}
-    for layer in features.keys():
-        if (masks is None or masks == {} or masks == [] or (layer not in masks.keys())) and (
-                channels is None or channels == {} or channels == [] or (
-                layer not in channels.keys())):  # use all features and all channels
-            feature_masks[layer] = np.ones_like(features[layer].detach().numpy())
-        elif isinstance(masks, dict) and (layer in masks.keys()) and isinstance(masks[layer], np.ndarray) and masks[
-            layer].ndim == 3 and masks[layer].shape[0] == features[layer].shape[0] and masks[layer].shape[1] == \
-                features[layer].shape[1] and masks[layer].shape[2] == features[layer].shape[2]:  # 3D mask
-            feature_masks[layer] = masks[layer]
-        # 1D feat and 1D mask
-        elif isinstance(masks, dict) and (layer in masks.keys()) and isinstance(masks[layer], np.ndarray) and features[
-            layer].ndim == 1 and masks[layer].ndim == 1 and masks[layer].shape[0] == features[layer].shape[0]:
-            feature_masks[layer] = masks[layer]
-        elif (masks is None or masks == {} or masks == [] or (layer not in masks.keys())) and isinstance(channels,
-                                                                                                         dict) and (
-                layer in channels.keys()) and isinstance(channels[layer], np.ndarray) and channels[
-            layer].size > 0:  # select channels
-            mask_2D = np.ones_like(features[layer].detach().numpy()[0])
-            mask_3D = np.tile(mask_2D, [len(channels[layer]), 1, 1])
-            feature_masks[layer] = np.zeros_like(features[layer].detach().numpy())
-            feature_masks[layer][channels[layer], :, :] = mask_3D
-        # use 2D mask select features for all channels
-        elif isinstance(masks, dict) and (layer in masks.keys()) and isinstance(masks[layer], np.ndarray) and masks[
-            layer].ndim == 2 and (
-                channels is None or channels == {} or channels == [] or (layer not in channels.keys())):
-            mask_2D_0 = masks[layer]
-            mask_size0 = mask_2D_0.shape
-            mask_size = features[layer].detach().numpy().shape[1:]
-            if mask_size0[0] == mask_size[0] and mask_size0[1] == mask_size[1]:
-                mask_2D = mask_2D_0
-            else:
-                mask_2D = np.ones(mask_size)
-                n_dim1 = min(mask_size0[0], mask_size[0])
-                n_dim2 = min(mask_size0[1], mask_size[1])
-                idx0_dim1 = np.arange(n_dim1) + \
-                            round((mask_size0[0] - n_dim1) / 2)
-                idx0_dim2 = np.arange(n_dim2) + \
-                            round((mask_size0[1] - n_dim2) / 2)
-                idx_dim1 = np.arange(n_dim1) + round((mask_size[0] - n_dim1) / 2)
-                idx_dim2 = np.arange(n_dim2) + round((mask_size[1] - n_dim2) / 2)
-                mask_2D[idx_dim1, idx_dim2] = mask_2D_0[idx0_dim1, idx0_dim2]
-            feature_masks[layer] = np.tile(
-                mask_2D, [features[layer].detach().numpy().shape[0], 1, 1])
-        else:
-            feature_masks[layer] = 0
-
-    return feature_masks
+    tmp_input = np.random.randint(0,256, input_shape)
+    # to convert pytorch input
+    tmp_input = torch.Tensor(tmp_input.transpose(2, 0, 1)[np.newaxis])
+    feat_shape = get_target_feature_shape(net, tmp_input, exec_code)
+    feature_mask = np.zeros(feat_shape)
+    if t_index is None:
+        feature_mask[0, channel, y_index, x_index] = 1
+    else:
+        feature_mask[0, channel, t_index, y_index, x_index] = 1
+    return feature_mask
 
 
 def estimate_cnn_feat_std(cnn_feat):

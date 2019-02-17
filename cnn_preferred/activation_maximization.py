@@ -18,7 +18,7 @@ import torch
 from datetime import datetime
 
 from utils import img_preprocess, img_deprocess, normalise_img, p_norm, TV_norm,TV_norm_vid, image_norm, gaussian_blur, \
-    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, normalise_vid, vid_preprocess, vid_deprocess,get_cnn_features
+    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, normalise_vid, vid_preprocess, vid_deprocess,get_cnn_features, create_feature_mask
 
 
 
@@ -37,28 +37,28 @@ class minusLoss(torch.nn.Module):
 
 
 # main function
-def generate_preferred(net, feature_mask,
-                   exec_code = None,
+def generate_preferred(net, exec_code, channel=None,
+                   feature_mask = None,
                    img_mean = (0,0,0),
                    img_std = (1,1,1),
+                   norm = 255,
                    input_size=(224, 224, 3),
                    feature_weight=1.,
                    initial_input=None,
                    iter_n=200,
-                   lr_start=2., lr_end=1e-10,
-                   momentum_start=0.9, momentum_end=0.9,
-                   decay_start=0.1, decay_end=0.1,
+                   lr_start=1., lr_end=1.,
+                   momentum_start=0.001, momentum_end=0.001,
+                   decay_start=0.001, decay_end=0.001,
                    grad_normalize=True,
                    image_jitter=True, jitter_size=32,
-                   image_blur=True, sigma_start=2., sigma_end=0.5,
-                   use_p_norm_reg=False, p=3, lamda_start=0.5, lamda_end=0.5,
+                   image_blur=True, sigma_start=2.5, sigma_end=0.5,
+                   use_p_norm_reg=False, p=2, lamda_start=0.5, lamda_end=0.5,
                    use_TV_norm_reg=False, TVbeta1=2, TVbeta2=2, TVlamda_start=0.5, TVlamda_end=0.5,
                    clip_extreme=False, clip_extreme_every=4, e_pct_start=1, e_pct_end=1,
                    clip_small_norm=False, clip_small_norm_every=4, n_pct_start=5., n_pct_end=5.,
                    clip_small_contribution=False, clip_small_contribution_every=4, c_pct_start=5., c_pct_end=5.,
                    disp_every=1,
-                   save_intermediate=False, save_intermediate_every=1, save_intermediate_path=None,
-                   norm = 255
+                   save_intermediate=False, save_intermediate_every=1, save_intermediate_path=None
                    ):
     '''Generate preferred image/video for the target uints using gradient descent with momentum.
 
@@ -66,19 +66,17 @@ def generate_preferred(net, feature_mask,
         ----------
         net: torch.nn.Module
             CNN model coresponding to the target CNN features.
-        layer: str
-            The name of the layer for the target units.
+
         feature_mask: ndarray
             The mask used to select the target units.
             The shape of the mask should be the same as that of the CNN features in that layer.
             The values of the mask array are binary, (1: target uint; 0: irrelevant unit)
-        hook ?
+
         exec_code: list
-           The code to extract intermidiate layer. This code is run in this function by
-           [exec(exec_str) for exec_str in exec_code]
-        mean: np.ndarray
+           The code to extract intermidiate layer. This code is run in the 'get_cnn_feature' function
+        img_mean: np.ndarray
             set the mean in rgb order to pre/de-process to input/output image/video
-        std : np.ndarray
+        img_std : np.ndarray
             set the std in rgb order to pre/de-process to input/output image/video
 
         input_size: np.ndarray
@@ -199,10 +197,7 @@ def generate_preferred(net, feature_mask,
         if save_intermediate_path is None:
             save_intermediate_path = os.path.join('.', 'preferred_gd_' + datetime.now().strftime('%Y%m%dT%H%M%S'))
         if not os.path.exists(save_intermediate_path):
-            os.makedirs(save_intermediate_path)
-
-    # input size
-    input_size = input_size
+            os.makedirs(save_intermediate_path, exist_ok=True)
 
     # image mean
     img_mean = img_mean
@@ -225,16 +220,21 @@ def generate_preferred(net, feature_mask,
             save_name = 'initial_video.avi'
             save_video(initial_input, save_name, save_intermediate_path)
         else:
-            assert 1 == 3
+            print('Input size is not appropriate for save')
+            assert len(input_size) not in [3,4]
+
+    # create feature mask if not define
+    if feature_mask is None:
+        feature_mask = create_feature_mask(net, exec_code, input_size, channel)
 
     # iteration for gradient descent
     init_input = initial_input.copy()
     if len(input_size) == 3:
         #Image
-        input = img_preprocess(init_input, img_mean, img_std)
+        input = img_preprocess(init_input, img_mean, img_std, norm)
     else:
         #Video
-        input = vid_preprocess(init_input, img_mean, img_std) # int_std need to be at vid_preprocess
+        input = vid_preprocess(init_input, img_mean, img_std, norm )
     delta_input = np.zeros_like(input)
     feat_grad = np.zeros_like(feature_mask)
     feat_grad[feature_mask == 1] = -1.  # here we use gradient descent, so the gradient is negative, in order to make the target units have high positive activation;
@@ -267,7 +267,7 @@ def generate_preferred(net, feature_mask,
         feat = torch.masked_select(fw, torch.ByteTensor(feature_mask))
         feat_abs_mean = np.mean(np.abs(feat[0].detach().numpy()))
 
-        #maybe for the first time, input.grad is None
+        #for the first time iteration, input.grad is None
         if input.grad is not None:
             input.grad.data.zero_()
         # zero grad
@@ -365,7 +365,7 @@ def generate_preferred(net, feature_mask,
             else:
                 save_name = '%05d.avi' % (t + 1)
                 save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path)
-            # print(img.dtype)
+
 
     # return input
     if len(input_size) == 3:
