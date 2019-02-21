@@ -18,7 +18,7 @@ import torch
 from datetime import datetime
 
 from utils import img_preprocess, img_deprocess, normalise_img, p_norm, TV_norm,TV_norm_vid, image_norm, gaussian_blur, \
-    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, normalise_vid, vid_preprocess, vid_deprocess,get_cnn_features, create_feature_mask
+    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, save_gif, normalise_vid, vid_preprocess, vid_deprocess,get_cnn_features, create_feature_mask
 
 
 
@@ -219,6 +219,12 @@ def generate_preferred(net, exec_code, channel=None,
             # video
             save_name = 'initial_video.avi'
             save_video(initial_input, save_name, save_intermediate_path)
+
+            save_name = 'initial_video.gif'
+            save_gif(initial_input, save_name, save_intermediate_path,
+                     fr_rate=150)
+
+
         else:
             print('Input size is not appropriate for save')
             assert len(input_size) not in [3,4]
@@ -234,7 +240,7 @@ def generate_preferred(net, exec_code, channel=None,
         input = img_preprocess(init_input, img_mean, img_std, norm)
     else:
         #Video
-        input = vid_preprocess(init_input, img_mean, img_std, norm )
+        input = vid_preprocess(init_input, img_mean, img_std, norm)
     delta_input = np.zeros_like(input)
     feat_grad = np.zeros_like(feature_mask)
     feat_grad[feature_mask == 1] = -1.  # here we use gradient descent, so the gradient is negative, in order to make the target units have high positive activation;
@@ -364,8 +370,9 @@ def generate_preferred(net, exec_code, channel=None,
                     os.path.join(save_intermediate_path, save_name))
             else:
                 save_name = '%05d.avi' % (t + 1)
-                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path)
-
+                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, fr_rate = 10)
+                save_name = '%05d.gif' % (t + 1)
+                save_gif(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, fr_rate = 150)
 
     # return input
     if len(input_size) == 3:

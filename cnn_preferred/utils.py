@@ -9,6 +9,7 @@ import scipy.ndimage as nd
 import cv2
 import copy
 import torch
+from PIL import Image
 
 
 def img_preprocess(img, img_mean=np.array([0.485, 0.456, 0.406], dtype=np.float),
@@ -41,10 +42,10 @@ def vid_deprocess(vid, img_mean=np.float32([104, 117, 123]), img_std=np.float32(
     return video.transpose(1, 2, 3, 0) * norm
 
 
-def save_video(vid, save_name, save_intermidiate_path, bgr='True'):
+def save_video(vid, save_name, save_intermidiate_path, bgr='True', fr_rate = 30):
     fr, height, width, ch = vid.shape
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-    writer = cv2.VideoWriter(os.path.join(save_intermidiate_path, save_name), fourcc, 30, (width, height))
+    writer = cv2.VideoWriter(os.path.join(save_intermidiate_path, save_name), fourcc, fr_rate, (width, height))
     for j in range(fr):
         frame = vid[j]
         if bgr == False:
@@ -53,6 +54,15 @@ def save_video(vid, save_name, save_intermidiate_path, bgr='True'):
         writer.write(frame.astype(np.uint8))
     writer.release()
 
+def save_gif(vid, save_name, save_intermidiate_path, bgr='True', fr_rate= 30):
+    gif_list = []
+    for frame in vid:
+        if bgr == True:
+            gif_list.append(Image.fromarray(frame[...,[2,1,0]].astype(np.uint8)))
+        else:
+            gif_list.append(Image.fromarray(frame.astype(np.uint8)))
+    gif_list[0].save(os.path.join(save_intermidiate_path, save_name), save_all=True,
+                     append_images=gif_list[1:], loop=0, duration=fr_rate)
 
 def normalise_img(img):
     '''Normalize the image.
@@ -256,7 +266,8 @@ def create_feature_mask(net, exec_code, input_shape = (224,224,3), channel=0, x_
 
     tmp_input = np.random.randint(0,256, input_shape)
     # to convert pytorch input
-    tmp_input = torch.Tensor(tmp_input.transpose(2, 0, 1)[np.newaxis])
+    axis_len = np.arange(len(tmp_input.shape))
+    tmp_input = torch.Tensor(tmp_input.transpose(np.roll(axis_len,1))[np.newaxis])
     feat_shape = get_target_feature_shape(net, tmp_input, exec_code)
     feature_mask = np.zeros(feat_shape)
     if t_index is None:
