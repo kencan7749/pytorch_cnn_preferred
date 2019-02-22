@@ -3,11 +3,28 @@
   <component name="ChangeListManager">
     <list default="true" id="195c889e-81f9-41ec-8adf-061f8fa06bb2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cnn_preferred/activation_maximization.py" beforeDir="false" afterPath="$PROJECT_DIR$/cnn_preferred/activation_maximization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cnn_preferred/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/cnn_preferred/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/.ipynb_checkpoints/Untitled2-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/.ipynb_checkpoints/Untitled3-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/.ipynb_checkpoints/generate_preferred_3dresnet_TV_norm-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/.ipynb_checkpoints/generate_preferred_3dresnet_TV_norm-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/Untitled.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/Untitled1.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/Untitled2.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/Untitled3.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/demo_icnn_lbfgs_3dresnet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/demo_icnn_lbfgs_C3D.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/fs_colorwheel.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/generate_preferred_3dresnet_TV_norm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/generate_preferred_3dresnet_TV_norm.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/orig_img.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_conv.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_conv.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/preferred_image_shortest_demo.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_shortest_demo.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/recon_mov_torch_true_feature_icnn_lbfgs_longer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/result/jupyter_demo_torch_C3D_TV_norm_all_20190204T132423/conv1/options.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/v009_0050.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/vggface_resnet50_keras_weight.h5" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +36,10 @@
     <session id="910044329">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.15" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -37,23 +56,23 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="2116" />
+          <entry key="py" value="2237" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="2116" />
+          <entry key="Python" value="2237" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cnn_preferred/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="366">
-              <caret line="64" column="35" selection-start-line="64" selection-start-column="35" selection-end-line="64" selection-end-column="35" />
+            <state relative-caret-position="1410">
+              <caret line="100" column="32" selection-start-line="100" selection-start-column="32" selection-end-line="100" selection-end-column="32" />
               <folding>
                 <element signature="e#99#108#0" expanded="true" />
               </folding>
@@ -64,20 +83,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cnn_preferred/activation_maximization.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-479">
-              <caret line="223" column="34" selection-start-line="223" selection-start-column="34" selection-end-line="223" selection-end-column="34" />
+            <state relative-caret-position="617">
+              <caret line="212" selection-start-line="212" selection-end-line="212" />
               <folding>
                 <element signature="e#215#224#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/example/recon_mov_torch_true_feature_icnn_lbfgs_longer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="122" column="48" selection-start-line="122" selection-end-line="122" selection-end-column="48" />
             </state>
           </provider>
         </entry>
@@ -91,14 +101,13 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/example/Untitled.ipynb" />
-        <option value="$PROJECT_DIR$/cnn_preferred/utils.py" />
         <option value="$PROJECT_DIR$/cnn_preferred/activation_maximization.py" />
+        <option value="$PROJECT_DIR$/cnn_preferred/utils.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-149" />
-    <option name="y" value="222" />
+    <option name="y" value="23" />
     <option name="width" value="1400" />
     <option name="height" value="786" />
   </component>
@@ -160,16 +169,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-149" y="222" width="1400" height="786" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1400" height="786" extended-state="0" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2496318" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -177,31 +181,23 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="R Packages" />
-      <window_info anchor="right" id="R Graphics" />
+      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="R Graphics" order="3" />
+      <window_info anchor="right" id="R Packages" order="4" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/example/Untitled2.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/Untitled.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/example/Untitled2.ipynb" />
+    <entry file="file://$PROJECT_DIR$/example/Untitled.ipynb" />
     <entry file="file://$USER_HOME$/.pyenv/versions/anaconda3-5.1.0/lib/python3.6/site-packages/torch/nn/modules/module.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="223">
@@ -209,17 +205,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example/recon_mov_torch_true_feature_icnn_lbfgs_longer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="122" column="48" selection-start-line="122" selection-end-line="122" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/example/recon_mov_torch_true_feature_icnn_lbfgs_longer.py" />
     <entry file="file://$PROJECT_DIR$/cnn_preferred/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="64" column="35" selection-start-line="64" selection-start-column="35" selection-end-line="64" selection-end-column="35" />
+        <state relative-caret-position="1410">
+          <caret line="100" column="32" selection-start-line="100" selection-start-column="32" selection-end-line="100" selection-end-column="32" />
           <folding>
             <element signature="e#99#108#0" expanded="true" />
           </folding>
@@ -228,8 +218,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cnn_preferred/activation_maximization.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-479">
-          <caret line="223" column="34" selection-start-line="223" selection-start-column="34" selection-end-line="223" selection-end-column="34" />
+        <state relative-caret-position="617">
+          <caret line="212" selection-start-line="212" selection-end-line="212" />
           <folding>
             <element signature="e#215#224#0" expanded="true" />
           </folding>

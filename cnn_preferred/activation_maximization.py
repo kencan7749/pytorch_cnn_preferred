@@ -210,6 +210,7 @@ def generate_preferred(net, exec_code, channel=None,
     # initial input
     if initial_input is None:
         initial_input = np.random.randint(0, 256, (input_size))
+
     if save_intermediate:
         if len(input_size) == 3:
             #image

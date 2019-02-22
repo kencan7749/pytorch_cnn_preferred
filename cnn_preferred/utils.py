@@ -90,7 +90,7 @@ def normalise_vid(vid):
     return vid
 
 
-def get_cnn_features(model, input, exec_code_list):
+def get_cnn_features(model, input, extract_feat_list):
     net = copy.deepcopy(model)
     outputs = []
 
@@ -98,8 +98,8 @@ def get_cnn_features(model, input, exec_code_list):
         outputs.append(output.clone())
 
     # run the code in exec_code
-    for exec_str in exec_code_list:
-        exec(exec_str)
+    for exec_str in extract_feat_list:
+        exec("net."+exec_str+".register_forward_hook(hook)")
     outputs = []
     _ = net(input)
 
@@ -233,25 +233,10 @@ def clip_small_contribution_pixel(img, grad, pct=1):
     return img
 
 
-def sort_layer_list(net, layer_list):
-    '''sort layers in the list as the order in the net'''
-    layer_index_list = []
-    for layer in layer_list:
-        # net.blobs is collections.OrderedDict
-        for layer_index, layer0 in enumerate(net.blobs.keys()):
-            if layer0 == layer:
-                layer_index_list.append(layer_index)
-                break
-    layer_index_list_sorted = sorted(layer_index_list)
-    layer_list_sorted = []
-    for layer_index in layer_index_list_sorted:
-        list_index = layer_index_list.index(layer_index)
-        layer = layer_list[list_index]
-        layer_list_sorted.append(layer)
-    return layer_list_sorted
 
 
-def create_feature_mask(net, exec_code, input_shape = (224,224,3), channel=0, x_index = None, y_index =None, t_index=None):
+
+def create_feature_mask(net, extract_feat_list, input_shape = (224,224,3), channel=0, x_index = None, y_index =None, t_index=None):
     '''
     create feature mask for all layers;
     select CNN units using masks or channels
@@ -268,7 +253,7 @@ def create_feature_mask(net, exec_code, input_shape = (224,224,3), channel=0, x_
     # to convert pytorch input
     axis_len = np.arange(len(tmp_input.shape))
     tmp_input = torch.Tensor(tmp_input.transpose(np.roll(axis_len,1))[np.newaxis])
-    feat_shape = get_target_feature_shape(net, tmp_input, exec_code)
+    feat_shape = get_target_feature_shape(net, tmp_input, extract_feat_list)
     feature_mask = np.zeros(feat_shape)
     if t_index is None:
         feature_mask[0, channel, y_index, x_index] = 1
