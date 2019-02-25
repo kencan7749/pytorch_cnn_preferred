@@ -176,11 +176,7 @@ def clip_extreme_pixel(img, pct=1):
 
 def clip_small_norm_pixel(img, pct=1):
     '''clip pixels with small RGB norm'''
-    if pct < 0:
-        pct = 0.
-
-    if pct > 100:
-        pct = 100.
+    pct = np.clip(pct,0.,100.)
 
     img_norm = image_norm(img)
     small_pixel = img_norm < np.percentile(img_norm, pct)
