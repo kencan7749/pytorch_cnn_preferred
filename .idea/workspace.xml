@@ -4,18 +4,6 @@
     <list default="true" id="195c889e-81f9-41ec-8adf-061f8fa06bb2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/activation_maximization.py" beforeDir="false" afterPath="$PROJECT_DIR$/cnn_preferred/activation_maximization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/prefer_img_dgn_gd.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/prefer_img_dgn_lbfgs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/prefer_img_gd.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/prefer_img_lbfgs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/prefer_vid_gd.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/cnn_preferred/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cnn_preferred/utils_caffe.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/generate_preferred_3dresnet_TV_norm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/generate_preferred_3dresnet_TV_norm.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/preferred_image_demo_resnet.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_demo_resnet.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_conv.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_conv.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_fc.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_fc.ipynb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,11 +20,12 @@
           <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.15" value="1" />
           <entry key="project.open.time.16" value="1" />
+          <entry key="project.open.time.19" value="1" />
           <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="8" />
+          <entry key="project.opened" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -68,38 +57,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cnn_preferred/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1220">
+            <state>
               <caret column="48" selection-start-column="48" selection-end-column="48" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/example/generate_preferred_3dresnet_moment_in_time.ipynb">
-          <provider selected="true" editor-type-id="ipnb-editor">
-            <state>
-              <selected id="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cnn_preferred/activation_maximization.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-443">
+            <state relative-caret-position="15">
               <caret line="220" column="71" selection-start-line="220" selection-start-column="71" selection-end-line="220" selection-end-column="71" />
               <folding>
                 <element signature="e#215#224#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/example/preferred_image_demo_resnet.ipynb">
-          <provider selected="true" editor-type-id="ipnb-editor">
-            <state>
-              <selected id="0" />
             </state>
           </provider>
         </entry>
@@ -131,6 +102,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -152,7 +124,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -185,8 +156,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-300" y="25" width="1400" height="638" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27540502" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2790869" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -221,9 +193,16 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/example/recon_mov_torch_true_feature_icnn_lbfgs_longer.py" />
+    <entry file="file://$PROJECT_DIR$/example/Fighting_icnn_gd_resnet2d.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/cnn_preferred/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1220">
+        <state>
           <caret column="48" selection-start-column="48" selection-end-column="48" />
         </state>
       </provider>
@@ -235,7 +214,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example/Fighting_icnn_gd_resnet2d.ipynb">
+    <entry file="file://$PROJECT_DIR$/example/preferred_image_demo_resnet.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
           <selected id="0" />
@@ -244,18 +223,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cnn_preferred/activation_maximization.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-443">
+        <state relative-caret-position="15">
           <caret line="220" column="71" selection-start-line="220" selection-start-column="71" selection-end-line="220" selection-end-column="71" />
           <folding>
             <element signature="e#215#224#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/preferred_image_demo_resnet.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
         </state>
       </provider>
     </entry>
