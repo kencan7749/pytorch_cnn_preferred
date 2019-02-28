@@ -1,4 +1,4 @@
-'''Utility functions for icnn.
+'''Utility functions for activation_maximization.
 
 Author: Ken SHIRAKAWA <shirakawa.ken.38w@st.kyoto-u.ac.jp.jp>
 '''
@@ -54,7 +54,7 @@ def save_video(vid, save_name, save_intermidiate_path, bgr='True', fr_rate = 30)
         writer.write(frame.astype(np.uint8))
     writer.release()
 
-def save_gif(vid, save_name, save_intermidiate_path, bgr='True', fr_rate= 30):
+def save_gif(vid, save_name, save_intermidiate_path, bgr='False', fr_rate= 30):
     gif_list = []
     for frame in vid:
         if bgr == True:

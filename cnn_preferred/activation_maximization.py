@@ -42,7 +42,7 @@ def generate_preferred(net, exec_code, channel=None,
                    img_mean = (0,0,0),
                    img_std = (1,1,1),
                    norm = 255,
-                   input_size=(224, 224, 3),
+                   input_size=(224, 224, 3), bgr = False,
                    feature_weight=1.,
                    initial_input=None,
                    iter_n=200,
@@ -199,6 +199,11 @@ def generate_preferred(net, exec_code, channel=None,
         if not os.path.exists(save_intermediate_path):
             os.makedirs(save_intermediate_path, exist_ok=True)
 
+    # initial input
+    if initial_input is None:
+        initial_input = np.random.randint(0, 256, (input_size))
+    else:
+        input_size = initial_input.shape
     # image mean
     img_mean = img_mean
     img_std = img_std
@@ -207,24 +212,23 @@ def generate_preferred(net, exec_code, channel=None,
     img_norm0 = np.linalg.norm(noise_vid)
     img_norm0 = img_norm0 / 2.
 
-    # initial input
-    if initial_input is None:
-        initial_input = np.random.randint(0, 256, (input_size))
 
     if save_intermediate:
         if len(input_size) == 3:
             #image
             save_name = 'initial_video.jpg'
-            PIL.Image.fromarray(np.uint8(initial_input)).save(os.path.join(save_intermediate_path, save_name))
+            if bgr:
+                PIL.Image.fromarray(np.uint8(initial_input[...,[2,1,0]])).save(os.path.join(save_intermediate_path, save_name))
+            else:
+                PIL.Image.fromarray(np.uint8(initial_input)).save(os.path.join(save_intermediate_path, save_name))
         elif len(input_size) == 4:
             # video
             save_name = 'initial_video.avi'
-            save_video(initial_input, save_name, save_intermediate_path)
+            save_video(initial_input, save_name, save_intermediate_path, bgr)
 
             save_name = 'initial_video.gif'
-            save_gif(initial_input, save_name, save_intermediate_path,
+            save_gif(initial_input, save_name, save_intermediate_path, bgr,
                      fr_rate=150)
-
 
         else:
             print('Input size is not appropriate for save')
@@ -367,13 +371,19 @@ def generate_preferred(net, exec_code, channel=None,
         if save_intermediate and ((t + 1) % save_intermediate_every == 0):
             if len(input_size) == 3:
                 save_name = '%05d.jpg' % (t + 1)
-                PIL.Image.fromarray(normalise_img(img_deprocess(input, img_mean, img_std,norm))).save(
+                if bgr:
+                    PIL.Image.fromarray(
+                        normalise_img(img_deprocess(input, img_mean, img_std, norm)[..., [2, 1, 0]])).save(
+                        os.path.join(save_intermediate_path, save_name))
+                else:
+                    PIL.Image.fromarray(normalise_img(img_deprocess(input, img_mean, img_std,norm))).save(
                     os.path.join(save_intermediate_path, save_name))
+
             else:
                 save_name = '%05d.avi' % (t + 1)
-                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, fr_rate = 10)
+                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, bgr,fr_rate = 10)
                 save_name = '%05d.gif' % (t + 1)
-                save_gif(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, fr_rate = 150)
+                save_gif(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path,bgr, fr_rate = 150)
 
     # return input
     if len(input_size) == 3:
