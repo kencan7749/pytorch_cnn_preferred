@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="195c889e-81f9-41ec-8adf-061f8fa06bb2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/Instruct_extracting_intermediate_feature.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/Instruct_extracting_intermediate_feature.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/preferred_image_demo_complexCNN_conv.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_demo_complexCNN_conv.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_conv.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_demo_simpleCNN_conv.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/preferred_image_shortest_demo.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/example/preferred_image_shortest_demo.ipynb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -66,8 +68,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cnn_preferred/activation_maximization.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="220" column="71" selection-start-line="220" selection-start-column="71" selection-end-line="220" selection-end-column="71" />
+            <state relative-caret-position="332">
+              <caret line="71" column="95" lean-forward="true" selection-start-line="71" selection-start-column="44" selection-end-line="71" selection-end-column="95" />
               <folding>
                 <element signature="e#215#224#0" expanded="true" />
               </folding>
@@ -223,8 +225,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cnn_preferred/activation_maximization.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="220" column="71" selection-start-line="220" selection-start-column="71" selection-end-line="220" selection-end-column="71" />
+        <state relative-caret-position="332">
+          <caret line="71" column="95" lean-forward="true" selection-start-line="71" selection-start-column="44" selection-end-line="71" selection-end-column="95" />
           <folding>
             <element signature="e#215#224#0" expanded="true" />
           </folding>
