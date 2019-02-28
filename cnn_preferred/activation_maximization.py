@@ -18,7 +18,8 @@ import torch
 from datetime import datetime
 
 from utils import img_preprocess, img_deprocess, normalise_img, p_norm, TV_norm,TV_norm_vid, image_norm, gaussian_blur, \
-    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, normalise_vid, vid_preprocess, vid_deprocess
+    clip_extreme_pixel, clip_small_norm_pixel, clip_small_contribution_pixel,save_video, save_gif, normalise_vid, vid_preprocess, vid_deprocess,get_cnn_features, create_feature_mask
+
 
 
 
@@ -32,32 +33,32 @@ class minusLoss(torch.nn.Module):
         super(minusLoss, self).__init__()
 
     def forward(self, act):
-        return -act
+        return -torch.sum(act)
 
 
 # main function
-def generate_preferred(net, feature_mask,
-                   exec_code = None,
+def generate_preferred(net, exec_code, channel=None,
+                   feature_mask = None,
                    img_mean = (0,0,0),
                    img_std = (1,1,1),
-                   input_size=(224, 224, 3),
+                   norm = 255,
+                   input_size=(224, 224, 3), bgr = False,
                    feature_weight=1.,
                    initial_input=None,
                    iter_n=200,
-                   lr_start=2., lr_end=1e-10,
-                   momentum_start=0.9, momentum_end=0.9,
-                   decay_start=0.1, decay_end=0.1,
+                   lr_start=1., lr_end=1.,
+                   momentum_start=0.001, momentum_end=0.001,
+                   decay_start=0.001, decay_end=0.001,
                    grad_normalize=True,
                    image_jitter=True, jitter_size=32,
-                   image_blur=True, sigma_start=2., sigma_end=0.5,
-                   use_p_norm_reg=False, p=3, lamda_start=0.5, lamda_end=0.5,
+                   image_blur=True, sigma_start=2.5, sigma_end=0.5,
+                   use_p_norm_reg=False, p=2, lamda_start=0.5, lamda_end=0.5,
                    use_TV_norm_reg=False, TVbeta1=2, TVbeta2=2, TVlamda_start=0.5, TVlamda_end=0.5,
                    clip_extreme=False, clip_extreme_every=4, e_pct_start=1, e_pct_end=1,
                    clip_small_norm=False, clip_small_norm_every=4, n_pct_start=5., n_pct_end=5.,
                    clip_small_contribution=False, clip_small_contribution_every=4, c_pct_start=5., c_pct_end=5.,
                    disp_every=1,
-                   save_intermediate=False, save_intermediate_every=1, save_intermediate_path=None,
-
+                   save_intermediate=False, save_intermediate_every=1, save_intermediate_path=None
                    ):
     '''Generate preferred image/video for the target uints using gradient descent with momentum.
 
@@ -65,19 +66,17 @@ def generate_preferred(net, feature_mask,
         ----------
         net: torch.nn.Module
             CNN model coresponding to the target CNN features.
-        layer: str
-            The name of the layer for the target units.
+
         feature_mask: ndarray
             The mask used to select the target units.
             The shape of the mask should be the same as that of the CNN features in that layer.
             The values of the mask array are binary, (1: target uint; 0: irrelevant unit)
-        hook ?
+
         exec_code: list
-           The code to extract intermidiate layer. This code is run in this function by
-           [exec(exec_str) for exec_str in exec_code]
-        mean: np.ndarray
+           The code to extract intermidiate layer. This code is run in the 'get_cnn_feature' function
+        img_mean: np.ndarray
             set the mean in rgb order to pre/de-process to input/output image/video
-        std : np.ndarray
+        img_std : np.ndarray
             set the std in rgb order to pre/de-process to input/output image/video
 
         input_size: np.ndarray
@@ -193,22 +192,18 @@ def generate_preferred(net, feature_mask,
 
      '''
 
-    def hook(module, input, output):
-        outputs.append(output.clone())
-    # run the code in exec_code
-    for exec_str in exec_code:
-        exec(exec_str)
-
     # make save dir
     if save_intermediate:
         if save_intermediate_path is None:
             save_intermediate_path = os.path.join('.', 'preferred_gd_' + datetime.now().strftime('%Y%m%dT%H%M%S'))
         if not os.path.exists(save_intermediate_path):
-            os.makedirs(save_intermediate_path)
+            os.makedirs(save_intermediate_path, exist_ok=True)
 
-    # input size
-    input_size = input_size
-
+    # initial input
+    if initial_input is None:
+        initial_input = np.random.randint(0, 256, (input_size))
+    else:
+        input_size = initial_input.shape
     # image mean
     img_mean = img_mean
     img_std = img_std
@@ -217,29 +212,40 @@ def generate_preferred(net, feature_mask,
     img_norm0 = np.linalg.norm(noise_vid)
     img_norm0 = img_norm0 / 2.
 
-    # initial input
-    if initial_input is None:
-        initial_input = np.random.randint(0, 256, (input_size))
+
     if save_intermediate:
         if len(input_size) == 3:
             #image
             save_name = 'initial_video.jpg'
-            PIL.Image.fromarray(np.uint8(initial_input)).save(os.path.join(save_intermediate_path, save_name))
+            if bgr:
+                PIL.Image.fromarray(np.uint8(initial_input[...,[2,1,0]])).save(os.path.join(save_intermediate_path, save_name))
+            else:
+                PIL.Image.fromarray(np.uint8(initial_input)).save(os.path.join(save_intermediate_path, save_name))
         elif len(input_size) == 4:
             # video
             save_name = 'initial_video.avi'
-            save_video(initial_input, save_name, save_intermediate_path)
+            save_video(initial_input, save_name, save_intermediate_path, bgr)
+
+            save_name = 'initial_video.gif'
+            save_gif(initial_input, save_name, save_intermediate_path, bgr,
+                     fr_rate=150)
+
         else:
-            assert 1 == 3
+            print('Input size is not appropriate for save')
+            assert len(input_size) not in [3,4]
+
+    # create feature mask if not define
+    if feature_mask is None:
+        feature_mask = create_feature_mask(net, exec_code, input_size, channel)
 
     # iteration for gradient descent
     init_input = initial_input.copy()
     if len(input_size) == 3:
         #Image
-        input = img_preprocess(init_input, img_mean, img_std)
+        input = img_preprocess(init_input, img_mean, img_std, norm)
     else:
         #Video
-        input = vid_preprocess(init_input, img_mean, img_std) # int_std need to be at vid_preprocess
+        input = vid_preprocess(init_input, img_mean, img_std, norm)
     delta_input = np.zeros_like(input)
     feat_grad = np.zeros_like(feature_mask)
     feat_grad[feature_mask == 1] = -1.  # here we use gradient descent, so the gradient is negative, in order to make the target units have high positive activation;
@@ -266,15 +272,13 @@ def generate_preferred(net, feature_mask,
         input = torch.Tensor(input[np.newaxis])
         input.requires_grad_()
         # forward
-        outputs = []
-        fw = net(input)
-        # extract first layer
-        fw = outputs[0]
+        fw = get_cnn_features(net, input, exec_code)[0]
+
 
         feat = torch.masked_select(fw, torch.ByteTensor(feature_mask))
         feat_abs_mean = np.mean(np.abs(feat[0].detach().numpy()))
 
-        #maybe for the first time, input.grad is None
+        #for the first time iteration, input.grad is None
         if input.grad is not None:
             input.grad.data.zero_()
         # zero grad
@@ -283,6 +287,8 @@ def generate_preferred(net, feature_mask,
         # backward for net
         loss = loss_fun(feat)
         loss.backward()
+
+
         grad = input.grad.numpy()
         input = input.detach().numpy()
         # normalize gradient
@@ -365,18 +371,25 @@ def generate_preferred(net, feature_mask,
         if save_intermediate and ((t + 1) % save_intermediate_every == 0):
             if len(input_size) == 3:
                 save_name = '%05d.jpg' % (t + 1)
-                PIL.Image.fromarray(normalise_img(img_deprocess(input, img_mean, img_std))).save(
+                if bgr:
+                    PIL.Image.fromarray(
+                        normalise_img(img_deprocess(input, img_mean, img_std, norm)[..., [2, 1, 0]])).save(
+                        os.path.join(save_intermediate_path, save_name))
+                else:
+                    PIL.Image.fromarray(normalise_img(img_deprocess(input, img_mean, img_std,norm))).save(
                     os.path.join(save_intermediate_path, save_name))
+
             else:
                 save_name = '%05d.avi' % (t + 1)
-                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std)), save_name, save_intermediate_path)
-            # print(img.dtype)
+                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, bgr,fr_rate = 10)
+                save_name = '%05d.gif' % (t + 1)
+                save_gif(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path,bgr, fr_rate = 150)
 
     # return input
     if len(input_size) == 3:
-        return img_deprocess(input, img_mean, img_std)
+        return img_deprocess(input, img_mean, img_std, norm)
     else:
-        return vid_deprocess(input, img_mean, img_std)
+        return vid_deprocess(input, img_mean, img_std, norm)
 
 
 
