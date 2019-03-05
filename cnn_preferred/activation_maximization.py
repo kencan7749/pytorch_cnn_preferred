@@ -223,8 +223,9 @@ def generate_preferred(net, exec_code, channel=None,
                 PIL.Image.fromarray(np.uint8(initial_input)).save(os.path.join(save_intermediate_path, save_name))
         elif len(input_size) == 4:
             # video
-            save_name = 'initial_video.avi'
-            save_video(initial_input, save_name, save_intermediate_path, bgr)
+            # if you install cv2 and ffmpeg, you can use save_video function which save preferred video as video format
+            #save_name = 'initial_video.avi'
+            #save_video(initial_input, save_name, save_intermediate_path, bgr)
 
             save_name = 'initial_video.gif'
             save_gif(initial_input, save_name, save_intermediate_path, bgr,
@@ -380,8 +381,9 @@ def generate_preferred(net, exec_code, channel=None,
                     os.path.join(save_intermediate_path, save_name))
 
             else:
-                save_name = '%05d.avi' % (t + 1)
-                save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, bgr,fr_rate = 10)
+                # if you install cv2 and ffmpeg, you can use save_video function which save preferred video as video format
+                #save_name = '%05d.avi' % (t + 1)
+                #save_video(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path, bgr,fr_rate = 10)
                 save_name = '%05d.gif' % (t + 1)
                 save_gif(normalise_vid(vid_deprocess(input, img_mean, img_std,norm)), save_name, save_intermediate_path,bgr, fr_rate = 150)
 
