@@ -6,7 +6,8 @@ Author: Ken SHIRAKAWA <shirakawa.ken.38w@st.kyoto-u.ac.jp.jp>
 import os
 import numpy as np
 import scipy.ndimage as nd
-import cv2
+# if you install cv2 and ffmpeg, you can use save_video function which save preferred video as video format
+#import cv2
 import copy
 import torch
 from PIL import Image
@@ -41,18 +42,19 @@ def vid_deprocess(vid, img_mean=np.float32([104, 117, 123]), img_std=np.float32(
     video = video + np.reshape(img_mean, (3, 1, 1, 1))
     return video.transpose(1, 2, 3, 0) * norm
 
+### if you install cv2 and ffmpeg, you can use save_video function which save preferred video as video format
 
-def save_video(vid, save_name, save_intermidiate_path, bgr='True', fr_rate = 30):
-    fr, height, width, ch = vid.shape
-    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-    writer = cv2.VideoWriter(os.path.join(save_intermidiate_path, save_name), fourcc, fr_rate, (width, height))
-    for j in range(fr):
-        frame = vid[j]
-        if bgr == False:
-            frame = frame[..., [2, 1, 0]]
-
-        writer.write(frame.astype(np.uint8))
-    writer.release()
+#def save_video(vid, save_name, save_intermidiate_path, bgr='True', fr_rate = 30):
+#    fr, height, width, ch = vid.shape
+#    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+#    writer = cv2.VideoWriter(os.path.join(save_intermidiate_path, save_name), fourcc, fr_rate, (width, height))
+#    for j in range(fr):
+#        frame = vid[j]
+#        if bgr == False:
+#            frame = frame[..., [2, 1, 0]]
+#
+#        writer.write(frame.astype(np.uint8))
+#   writer.release()
 
 def save_gif(vid, save_name, save_intermidiate_path, bgr='False', fr_rate= 30):
     gif_list = []
