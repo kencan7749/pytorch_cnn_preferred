@@ -1,4 +1,7 @@
 '''Utility functions for activation_maximization.
+This codes in this repository are based on CNN preferred image (cnnpref) https://github.com/KamitaniLab/cnnpref, which is written for 'Caffe'. These scripts are released under the MIT license.
+
+Copyright (c) 2018 Kamitani Lab (<http://kamitani-lab.ist.i.kyoto-u.ac.jp/>)
 
 Author: Ken SHIRAKAWA <shirakawa.ken.38w@st.kyoto-u.ac.jp.jp>
 '''

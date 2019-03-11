@@ -112,7 +112,9 @@ version 1.0 #2019/03/08
 
 ### Copyright and license
 
+This codes in this repository are based on CNN preferred image (cnnpref) https://github.com/KamitaniLab/cnnpref, which is written for 'Caffe'. These scripts are released under the MIT license.
 
+Copyright (c) 2018 Kamitani Lab (<http://kamitani-lab.ist.i.kyoto-u.ac.jp/>)
 
 ### Author
 
