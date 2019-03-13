@@ -1,6 +1,6 @@
 # pytorch cnn_preferred
 
-  Generate preferred image/video for the target units in arbitrary CNN model written in pytorch
+  Generate a preferred image/video for the target units in arbitrary CNN model written in pytorch.
 
 | features[12]                                                 | features[14]                                                 | features[17]                                                 | features[21]                                                 |                         features[28]                         | classifier[6]                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | :----------------------------------------------------------: | ------------------------------------------------------------ |
@@ -12,24 +12,24 @@ These are the preferred images of some channels in the layer of VGG16 trained on
 
 ## Description
 
-  This repository contains Python codes for generating preferred image/video of the target units in a CNN model. The preferred image is based on the "activation maximum" method which generates images such that target unit(s) can have high activation value (vectors).
+  This repository contains Python codes for generating a preferred image/video of the target units in a CNN model. The preferred image is generated based on the "activation maximum" method which generates images such that the target unit(s) can have high activation value (vectors).
 
-  Here, we can generate preferred image in arbitrary CNN model written in pytorch. I already tried  pretrained AlexNet, VGG19, ResNet50, Densenet121, Inception-v3, provided by torchvision. I also tried 3D CNN optimized for video input such as C3D ([pretrained on Sports1M dataset](https://github.com/DavideA/c3d-pytorch)), and 3D ResNet50 inflated from 2D RGB model  ([pertained on Moments in time dataset](https://github.com/metalbubble/moments_models )). Please try to your own CNN. Enjoy!
+  Here, we can generate a preferred image in arbitrary CNN model written in pytorch. I already tried pretrained AlexNet, VGG19, ResNet50, Densenet121, Inception-v3, provided by torchvision. I also tried 3D CNN optimized for video input such as C3D ([pretrained on Sports1M dataset](https://github.com/DavideA/c3d-pytorch)), and 3D ResNet50 inflated from 2D RGB model  ([pertained on Moments in time dataset](https://github.com/metalbubble/moments_models )). Please try to your own CNN. Enjoy!
 
 ## Requirements
 
 I checked this repository work correctly in this environment:
 
 - Python 3.6
-- Numpy
-- Scipy
-- PIL
+- Numpy 1.14.2
+- Scipy 0.19.0
+- PIL 5.0.0
 - Pytorch 0.4.1
-- Torchvison
+- Torchvison 0.2.1
 
 ## Usage
 
-The key component is extracting intemediate layer activation. See `example/Instruct_extracting_intermediate_feature.ipynb` and try to run it.
+The key component is extracting intermediate layer activation. See `example/Instruct_extracting_intermediate_feature.ipynb` and try to run it.
 
 Generating preferred image code is at `example/preferred_image_shortest_demo.ipynb`. You can generate preferred image without concerning any parameters. If you consider the parameters carefully, check `example/preferred_image_demo_simpleCNN_conv` or `example/preferred_image_demo_complexCNN_conv.ipynb`.
 
@@ -37,7 +37,7 @@ Generating preferred image code is at `example/preferred_image_shortest_demo.ipy
 
 ## Image Gallery
 
-Here area the example results of  variaous network. First one is preferred image of maximized channel. Second one is that of maximized unit. The parameter doesn't change as the example code expect iteration (n_iter: 200 to 2000).
+Here area the example results of a various network. First one is preferred images of a maximized channel. The second one is that of a maximized unit. The parameter doesn't change as the example code expect the number of iteration (n_iter: 200 to 2000).
 
 ### Images maximimizing a channel
 
@@ -70,7 +70,7 @@ Here area the example results of  variaous network. First one is preferred image
 
 - 3D ResNet50 (pretrained on Moments in Time dataset)
 
-  These results are preferred video of 16 frames input (shown as gif). Note that this model trained on 16 frame inputs at 5 fps. Preferred video is not good quality especially  higer layer (hard to see meaningful expression). If you can generate good one, please tell me how to do that.
+  These results are preferred videos of 16 frames input (shown as gif). Note that this model trained on 16 frame inputs at 5 fps. Preferred videos are not good quality especially higher layer (hard to see meaningful expression). If you can generate a good one, please tell me how to do that.
 
 | layer2[3].conv3                                              | layer3[5].conv3                                              | layer4[2].conv3                                              | fc (last_linear)                                             |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -112,7 +112,7 @@ version 1.0 #2019/03/08
 
 ### Copyright and license
 
-This codes in this repository are based on CNN preferred image (cnnpref) ( https://github.com/KamitaniLab/cnnpref), which is written for 'Caffe'. These scripts are released under the MIT license.
+The codes in this repository are based on "CNN preferred image (cnnpref)" (https://github.com/KamitaniLab/cnnpref), which is written for "Caffe". These scripts are released under the MIT license.
 
 Copyright (c) 2018 Kamitani Lab (<http://kamitani-lab.ist.i.kyoto-u.ac.jp/>)
 
