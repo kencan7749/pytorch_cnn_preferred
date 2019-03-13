@@ -108,7 +108,7 @@ Here area the example results of a various network. First one is preferred image
 
 ### Version
 
-version 1.0 #released at 2019/03/013
+version 1.0 #released at 2019/03/13
 
 ### Copyright and license
 
