@@ -219,7 +219,7 @@ def generate_preferred(net, exec_code, channel=None,
     if save_intermediate:
         if len(input_size) == 3:
             #image
-            save_name = 'initial_video.jpg'
+            save_name = 'initial_image.jpg'
             if bgr:
                 PIL.Image.fromarray(np.uint8(initial_input[...,[2,1,0]])).save(os.path.join(save_intermediate_path, save_name))
             else:
