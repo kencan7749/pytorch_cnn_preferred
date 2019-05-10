@@ -20,7 +20,7 @@ def img_preprocess(img, img_mean=np.array([0.485, 0.456, 0.406], dtype=np.float)
                    img_std=np.array([0.229, 0.224, 0.225], dtype=np.float), norm=255):
     '''convert to Pytorch's input image layout'''
     img = img / norm
-    image = np.float32(np.transpose(img, (2, 0, 1))) - np.reshape(img_mean, (3, 1, 1)) / np.reshape(img_std, (3, 1, 1))
+    image = np.float32(np.transpose(img, (2, 0, 1)) - np.reshape(img_mean, (3, 1, 1)) )/ np.reshape(img_std, (3, 1, 1))
     return image
 
 
