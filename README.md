@@ -10,6 +10,12 @@
 
 These are the preferred images of some channels in the layer of VGG16 trained on ImageNet dataset.
 
+
+
+*** Note***
+
+I created Instagram account to post automattically generating these preferred images everyday. Please access this link:  https://www.instagram.com/k__shirakawa/. Anyone's follow are welcomed!
+
 ## Description
 
   This repository contains Python codes for generating a preferred image/video of the target units in a CNN model. The preferred image is generated based on the "activation maximum" method which generates images such that the target unit(s) can have high activation value (vectors).
@@ -24,8 +30,9 @@ I checked this repository work correctly in this environment:
 - Numpy 1.14.2
 - Scipy 0.19.0
 - PIL 5.0.0
-- Pytorch 0.4.1
+- Pytorch 0.4.1 and 1.0.1
 - Torchvison 0.2.1
+- Opencv 3.4.0 (if you want to only generate images, you don't need it)
 
 ## Usage
 
@@ -37,7 +44,7 @@ Generating preferred image code is at `example/preferred_image_shortest_demo.ipy
 
 ## Image Gallery
 
-Here area the example results of a various network. First one is preferred images of a maximized channel. The second one is that of a maximized unit. The parameter doesn't change as the example code expect the number of iteration (n_iter: 200 to 2000).
+Heres are the example results of a various network. First one is preferred images of a maximized channel. The second one is that of a maximized unit. The parameter doesn't change as the example code expect the number of iteration (n_iter: 200 to 2000).
 
 ### Images maximimizing a channel
 
@@ -110,11 +117,11 @@ Here area the example results of a various network. First one is preferred image
 
 version 1.0 #released at 2019/03/13
 
+version 1.1 #updated about add instagram account, and create for preferred video function at 2019/08/29
+
 ### Copyright and license
 
 The codes in this repository are based on "CNN preferred image (cnnpref)" (https://github.com/KamitaniLab/cnnpref), which is written for "Caffe". These scripts are released under the MIT license.
-
-Copyright (c) 2018 Kamitani Lab (<http://kamitani-lab.ist.i.kyoto-u.ac.jp/>)
 
 ### Author
 

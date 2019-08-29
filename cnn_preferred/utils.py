@@ -1,7 +1,4 @@
 '''Utility functions for activation_maximization.
-This codes in this repository are based on CNN preferred image (cnnpref) https://github.com/KamitaniLab/cnnpref, which is written for 'Caffe'. These scripts are released under the MIT license.
-
-Copyright (c) 2018 Kamitani Lab (<http://kamitani-lab.ist.i.kyoto-u.ac.jp/>)
 
 Author: Ken SHIRAKAWA <shirakawa.ken.38w@st.kyoto-u.ac.jp.jp>
 '''
@@ -9,8 +6,7 @@ Author: Ken SHIRAKAWA <shirakawa.ken.38w@st.kyoto-u.ac.jp.jp>
 import os
 import numpy as np
 import scipy.ndimage as nd
-# if you install cv2 and ffmpeg, you can use save_video function which save preferred video as video format
-#import cv2
+import cv2
 import copy
 import torch
 from PIL import Image
@@ -20,7 +16,8 @@ def img_preprocess(img, img_mean=np.array([0.485, 0.456, 0.406], dtype=np.float)
                    img_std=np.array([0.229, 0.224, 0.225], dtype=np.float), norm=255):
     '''convert to Pytorch's input image layout'''
     img = img / norm
-    image = np.float32(np.transpose(img, (2, 0, 1)) - np.reshape(img_mean, (3, 1, 1)) )/ np.reshape(img_std, (3, 1, 1))
+    
+    image = np.float32(np.transpose(img, (2, 0, 1))) - np.reshape(img_mean, (3, 1, 1)) / np.reshape(img_std, (3, 1, 1))
     return image
 
 
@@ -45,19 +42,18 @@ def vid_deprocess(vid, img_mean=np.float32([104, 117, 123]), img_std=np.float32(
     video = video + np.reshape(img_mean, (3, 1, 1, 1))
     return video.transpose(1, 2, 3, 0) * norm
 
-### if you install cv2 and ffmpeg, you can use save_video function which save preferred video as video format
 
-#def save_video(vid, save_name, save_intermidiate_path, bgr='True', fr_rate = 30):
-#    fr, height, width, ch = vid.shape
-#    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-#    writer = cv2.VideoWriter(os.path.join(save_intermidiate_path, save_name), fourcc, fr_rate, (width, height))
-#    for j in range(fr):
-#        frame = vid[j]
-#        if bgr == False:
-#            frame = frame[..., [2, 1, 0]]
-#
-#        writer.write(frame.astype(np.uint8))
-#   writer.release()
+def save_video(vid, save_name, save_intermidiate_path, bgr='False', fr_rate = 30):
+    fr, height, width, ch = vid.shape
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    writer = cv2.VideoWriter(os.path.join(save_intermidiate_path, save_name), fourcc, fr_rate, (width, height))
+    for j in range(fr):
+        frame = vid[j]
+        if bgr == False:
+            frame = frame[..., [2, 1, 0]]
+
+        writer.write(frame.astype(np.uint8))
+    writer.release()
 
 def save_gif(vid, save_name, save_intermidiate_path, bgr='False', fr_rate= 30):
     gif_list = []
@@ -86,13 +82,12 @@ def normalise_vid(vid):
     Map the minimum pixel to 0; map the maximum pixel to 255.
     Convert the pixels to be int
     '''
-    for j, img in enumerate(vid):
-        img = img - img.min()
-        if img.max() > 0:
-            img = img * (255.0 / img.max())
-        img = np.uint8(img)
-        vid[j] = img
+    vid = vid - vid.min()
+    if vid.max() > 0:
+        vid = vid * (255.0 / vid.max())
+    vid = np.uint8(vid)
     return vid
+    
 
 
 def get_cnn_features(model, input, extract_feat_list):
@@ -126,6 +121,9 @@ def p_norm(x, p=2):
 
 def TV_norm(x, TVbeta=1):
     '''TV_norm loss and gradient'''
+    """notice for pytorch, input dimension is different with caffe (adding new axis (indicating batchsize)
+    x... video for applicable for pytorch (shape satify (1, 3 ,duration, height, width)
+    """
     TVbeta = float(TVbeta)
     d1 = np.roll(x, -1, 1)
     d1[:, -1, :] = x[:, -1, :]
@@ -146,34 +144,56 @@ def TV_norm(x, TVbeta=1):
     return loss, grad
 
 
-def TV_norm_vid(x, TVbeta_s=1, TVbeta_t=1):
+def TV_norm_sp(x, kappa=1):
     '''TV_norm loss and gradient'''
-    TVbeta1 = float(TVbeta_s)
-    TVbeta2 = float(TVbeta_t)
-    d1 = np.roll(x, -1, 1)
-    # maybe add new axis
-    d1[:, :, -1, :] = x[:, :, -1, :]
+    """notice for pytorch, input dimension is different with caffe (adding new axis (indicating batchsize)
+    x... video for applicable for pytorch (shape satify (1, 3 ,duration, height, width)
+    """
+    TVbeta = 2
+    TVbeta = float(TVbeta)
+    d1 = np.roll(x, -1, 2)
+    d1[:,:, -1, :] = x[:,:, -1, :]
     d1 = d1 - x
-    d2 = np.roll(x, -1, 2)
-    d2[:, :, :, -1] = x[:, :, :, -1]
+    d2 = np.roll(x, -1, 3)
+    d2[:,:, :, -1] = x[:,:, :, -1]
     d2 = d2 - x
-    d3 = np.roll(x, -1, 3)
+    v = (np.sqrt(d1 * d1 + d2 * d2)) ** TVbeta
+    loss = v.sum() * kappa
+    v[v < 1e-5] = 1e-5
+    d1[d1 < 1e-5] = 1e-5
+    d2[d2 < 1e-5] = 1e-5
+    d1_ = (v ** (2 * (TVbeta / 2 - 1) / TVbeta)) * d1
+    d2_ = (v ** (2 * (TVbeta / 2 - 1) / TVbeta)) * d2
+    d11 = np.roll(d1_, 1, 2) - d1_
+    d22 = np.roll(d2_, 1, 3) - d2_
+    d11[:, :,0, :] = -d1_[:,:, 0, :]
+    d22[:,:, :, 0] = -d2_[:, :,:, 0]
+    grad = TVbeta * (d11 + d22) * kappa
+    return loss, grad
+
+def TV_norm_tmp(x, kai=1):
+    '''TV_norm loss and gradient'''
+    """
+    x... video for applicable for pytorch (shape satify (3 ,duration, height, width)
+    """
+    
+    TVbeta2 = 2 #float(TVbeta_t)
+    
+    
+    d3 = np.roll(x, -1, 1)
     d3[:, -1, :, :] = x[:, -1, :, :]
     d3 = d3 - x
 
-    v = (np.sqrt(d1 * d1 + d2 * d2) ** TVbeta1 + np.sqrt(d3 * d3) ** TVbeta2)
-    loss = v.sum()
+    v =  np.sqrt(d3 * d3) ** TVbeta2
+    loss = v.sum() * kai
+    # prevent underflow
     v[v < 1e-5] = 1e-5
-    d1_ = (v ** (2 * (TVbeta1 / 2 - 1) / TVbeta1)) * d1
-    d2_ = (v ** (2 * (TVbeta1 / 2 - 1) / TVbeta1)) * d2
-    d3_ = (v ** (2 * (TVbeta2 / 2 - 1) / TVbeta2)) * d3
-    d11 = np.roll(d1_, 1, 1) - d1_
-    d22 = np.roll(d2_, 1, 2) - d2_
-    d33 = np.roll(d3_, 1, 2) - d3
-    d11[:, :, 0, :] = -d1_[:, :, 0, :]
-    d22[:, :, :, 0] = -d2_[:, :, :, 0]
+    d3[d3 < 1e-5] = 1e-5
+    # calculate derivative
+    d3_ = TVbeta2 * d3 ** (TVbeta2-1)
+    d33 = np.roll(d3_, 1, 1) - d3_
     d33[:, 0, :, :] = -d3_[:, 0, :, :]
-    grad = TVbeta1 * (d11 + d22) + TVbeta2 * (d33)
+    grad =  TVbeta2 * (d33) * kai
     return loss, grad
 
 
@@ -190,6 +210,13 @@ def gaussian_blur(img, sigma):
         img[1] = nd.filters.gaussian_filter(img[1], sigma, order=0)
         img[2] = nd.filters.gaussian_filter(img[2], sigma, order=0)
     return img
+
+def gaussian_blur_vid(vid, sigma_xy, sigma_t):
+    if sigma_xy > 0:
+        vid[0] = nd.filters.gaussian_filter(vid[0], [sigma_t, sigma_xy, sigma_xy], order=0)
+        vid[1] = nd.filters.gaussian_filter(vid[1], [sigma_t, sigma_xy, sigma_xy], order=0)
+        vid[2] = nd.filters.gaussian_filter(vid[2], [sigma_t, sigma_xy, sigma_xy], order=0)
+    return vid
 
 
 def clip_extreme_pixel(img, pct=1):
