@@ -14,7 +14,7 @@ These are the preferred images of some channels in the layer of VGG16 trained on
 
 *** Note***
 
-I created Instagram account to post automattically generating these preferred images everyday. Please access this link:  https://www.instagram.com/k__shirakawa/. Anyone's follow are welcomed!
+I created Instagram account to post automattically generating these preferred images everyday. Please access this link:  https://www.instagram.com/k__shirakawa/. Anyone's follows are welcomed!
 
 ## Description
 
